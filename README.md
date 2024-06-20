@@ -15,6 +15,7 @@ Esto generará dos archivos:
 * nginx-server.key: Clave privada.
 * nginx-server.key.pub: Clave pública.
 * Guarda de manera segura la clave privada (nginx-server.key). La clave pública (nginx-server.key.pub) será utilizada en Terraform para configurar el acceso a la instancia en AWS.
+* Realice cambios en la linea 33,48,86 de main.tf el apartado de Tags -> Owner: "Por el nombre del propietario"
 ## Pasos para Configurar y Desplegar
 ### Paso 1: Inicializar Terraform
 Antes de comenzar, inicializa Terraform en el directorio del proyecto para preparar el entorno de trabajo:
