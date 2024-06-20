@@ -34,3 +34,4 @@ Una vez revisado el plan y estés listo para aplicar los cambios, ejecuta el com
 terraform apply
 ```
 Confirma la acción escribiendo "yes" cuando se solicite.
+Una vez realizado el apply, accedemos a nuestra consola de aws, y buscamos la instancia creada, copiamos la ip, la pegamos en el navegador, finalmente comprobamos que funciona correctamente nuestra instancia. 
