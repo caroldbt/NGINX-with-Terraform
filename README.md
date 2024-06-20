@@ -18,3 +18,4 @@ Una vez revisado el plan y estés listo para aplicar los cambios, ejecuta el com
 ```bash
 terraform apply
 ```
+Confirma la acción escribiendo "yes" cuando se solicite.
