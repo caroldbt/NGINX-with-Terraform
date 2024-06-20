@@ -6,14 +6,33 @@ terraform {
     }
   }
 }
+### Variables ###
+variable "ami_id" {
+  description = "ID de la AMI para la instancia EC2"
+  default     = "ami-0440d3b780d96b29d"
+}
+variable "instance_type" {
+  description = "Tipo de instancia EC2"
+  default     = "t2.micro"
+}
+variable "server_name" {
+  description = "Nombre del servidor web"
+  default     = "nginx-server"
+}
+variable "environment" {
+  description = "Ambiente de la aplicación"
+  default     = "test"
 
+}
+
+## provider
 provider "aws" {
   region = "us-east-1"
 }
 
 resource "aws_instance" "nginx-server" {
-  ami           = "ami-0440d3b780d96b29d"
-  instance_type = "t2.micro"
+  ami           = var.ami_id
+  instance_type = var.instance_type
 
   ## creamos un script de bash, donde instalamos nginx
   user_data = <<-EOF
@@ -26,11 +45,11 @@ resource "aws_instance" "nginx-server" {
   key_name               = aws_key_pair.nginx-server-ssh.key_name
   vpc_security_group_ids = [aws_security_group.nginx-server-sg.id]
 
-  # Tags de mi instancia
+  # Tags
   tags = {
-    Name        = "nginx-server"
-    Environment = "test"
-    Owner       = "aqui tu nombre o email"
+    Name        = var.server_name
+    Environment = var.environment
+    Owner       = "carol123dbt@gmail.com"
     Team        = "DevOps"
     Project     = "terraform-nginx"
   }
@@ -38,14 +57,14 @@ resource "aws_instance" "nginx-server" {
 
 ## keys de nginx
 resource "aws_key_pair" "nginx-server-ssh" {
-  key_name = "nginx-server-ssh"
+  key_name = "${var.server_name}-ssh"
   #subimos nuestra llave en aws 
-  public_key = file("nginx-server.key.pub")
-  # Tags de clave ssh
+  public_key = file("${var.server_name}.key.pub")
+  # Tags
   tags = {
-    Name        = "nginx-server-ssh"
-    Environment = "test"
-    Owner       = "aqui tu nombre o email"
+    Name        = "${var.server_name}-ssh"
+    Environment = "${var.environment}"
+    Owner       = "carol123dbt@gmail.com"
     Team        = "DevOps"
     Project     = "terraform-nginx"
   }
@@ -79,12 +98,24 @@ resource "aws_security_group" "nginx-server-sg" {
     protocol    = "-1"
     cidr_blocks = ["0.0.0.0/0"]
   }
-  # Tags de grupo de seguridad
+  # Tags
   tags = {
-    Name        = "nginx-server-sg"
-    Environment = "test"
-    Owner       = "aqui tu nombre o email"
+    Name        = "${var.server_name}-sg"
+    Environment = "${var.environment}"
+    Owner       = "carol123dbt@gmail.com"
     Team        = "DevOps"
     Project     = "terraform-nginx"
   }
+}
+
+# Mostrar información resultante de la infraestructura
+output "public_ip" {
+  description = "Dirección IP publica de la instancia EC2"
+  value       = aws_instance.nginx-server.public_ip
+}
+
+# Mostrar información resultante de la infraestructura
+output "public_dns" {
+  description = "DNS publico de la instancia EC2"
+  value       = aws_instance.nginx-server.public_dns
 }
